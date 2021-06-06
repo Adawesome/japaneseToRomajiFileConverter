@@ -1,0 +1,14 @@
+{
+  "name": "toromaji",
+  "version": "1.0.0",
+  "description": "",
+  "main": "toRomaji.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wanakana": "^4.0.2"
+  }
+}
