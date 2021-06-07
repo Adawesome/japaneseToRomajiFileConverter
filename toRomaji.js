@@ -12,15 +12,42 @@ const wanakana = require('wanakana');
 async function handleArgs() {
     const args = process.argv.slice(2);
     switch(args[0]) {
+        case('-h'):
+        case('-H'):
+            displayHelpMenu();
+            return -1; // -1 will represent input that will not follow normal execution.
         case('-r'):
         case('-R'):
             // iterate on all files in the directory
-            const pathStat = await fs.lstat('test.txt');
-            console.log(pathStat.isFile());
-            break;
+            if(await isFile(args[1])) {
+                // need to check if directory
+                console.log('A single file was given, but a directory is expected. Please remove the recursion flag.');
+                return -1;
+            } else {
+                if(await isDirectory(args[1])) {
+                    return await readdir(args[1]);
+                } else {
+                    console.log('A directory path was not provided.');
+                    return -1;
+                }
+                
+            }
+        case('-s'):
+        case('S'):
+            if(await isFile(args[1])) {
+                return [...args[1]];
+            }
+            else {
+                console.log('A valid file path was not entered.');
+                return -1;
+            }
         default: 
-            console.log('Usage: node toRomaji [options] <file path>.');
-            return [];
+            if(await isFile(args[1])) {
+                return [...args[1]];
+            } else {
+                displayHelpMenu();
+                return -1;
+            }      
     }
 }
 
@@ -34,6 +61,10 @@ async function toRomaji(fileName) {
 
 async function main() {
     const myFiles = await handleArgs();
+    if(myFiles === -1) {
+        console.log('Concluding program.')
+        return;
+    }
     const convertingFiles = myFiles.map(filePath => {
         return toRomaji(filePath);
     });
@@ -41,3 +72,36 @@ async function main() {
 }
 
 main()
+
+/* helper functions*/
+
+async function isFile(pathName) {
+    if(pathName) {
+        const pathStat = await lstat(pathName);
+        return pathStat.isFile();
+    } else {
+        return false;
+    }
+}
+
+async function isDirectory(pathName) {
+    if(pathName) {
+        const pathStat = await lstat(pathName);
+        return pathStat.isDirectory();
+    } else {
+        return false;
+    }
+}
+
+function displayHelpMenu() {
+    console.log('Usage: node toRomaji [options] <file path>');
+    console.group(); //A
+        console.log('OPTIONS');
+        console.group(); //B
+            console.log('-h -H | help menu');
+            console.log('-r -R | recursion, iterate over a directory against multiple files');
+            console.log('-s -S | single file, rename the single file provided by the subsequent argument');
+            console.groupEnd(); //B
+        console.log('default | If no options are given, a single file is expected.');
+        console.groupEnd(); //A
+}
