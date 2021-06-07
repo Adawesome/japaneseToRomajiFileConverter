@@ -14,8 +14,16 @@ async function handleArgs() {
     switch(args[0]) {
         case('-h'):
         case('-H'):
-            console.log('help menu TODO');
             console.log('Usage: node toRomaji [options] <file path>.');
+            console.group(); //A
+                console.log('OPTIONS');
+                console.group(); //B
+                    console.log('-h -H | help menu');
+                    console.log('-r -R | recursion, iterate over a directory against multiple files');
+                    console.log('-s -S | single file, rename the single file provided by the subsequent argument');
+                    console.groupEnd(); //B
+                console.log('default | If no options are given, a single file is expected.');
+                console.groupEnd(); //A
             return -1; // -1 will represent input that will not follow normal execution.
         case('-r'):
         case('-R'):
@@ -80,14 +88,7 @@ main()
 
 async function isFile(pathName) {
     if(pathName) {
-        const pathStat = await fs.lstat(pathName, (err, stats) => {
-            if(err) {
-                return false;
-            }
-            else {
-                return stats;
-            }
-        });
+        const pathStat = await lstat(pathNam);
         return pathStat.isFile();
     } else {
         return false;
