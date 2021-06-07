@@ -20,10 +20,17 @@ async function handleArgs() {
         case('-R'):
             // iterate on all files in the directory
             if(await isFile(args[1])) {
-                console.log('A single file or something that is neither a file nor a directory, but a directory is expected. Please remove the recursion flag.');
+                // need to check if directory
+                console.log('A single file was given, but a directory is expected. Please remove the recursion flag.');
                 return -1;
             } else {
-                return args[1];
+                if(await isDirectory(args[1])) {
+                    return await readdir(args[1]);
+                } else {
+                    console.log('A directory path was not provided.');
+                    return -1;
+                }
+                
             }
         case('-s'):
         case('S'):
@@ -70,12 +77,20 @@ main()
 
 async function isFile(pathName) {
     if(pathName) {
-        const pathStat = await lstat(pathNam);
+        const pathStat = await lstat(pathName);
         return pathStat.isFile();
     } else {
         return false;
     }
+}
 
+async function isDirectory(pathName) {
+    if(pathName) {
+        const pathStat = await lstat(pathName);
+        return pathStat.isDirectory();
+    } else {
+        return false;
+    }
 }
 
 function displayHelpMenu() {
