@@ -14,22 +14,13 @@ async function handleArgs() {
     switch(args[0]) {
         case('-h'):
         case('-H'):
-            console.log('Usage: node toRomaji [options] <file path>.');
-            console.group(); //A
-                console.log('OPTIONS');
-                console.group(); //B
-                    console.log('-h -H | help menu');
-                    console.log('-r -R | recursion, iterate over a directory against multiple files');
-                    console.log('-s -S | single file, rename the single file provided by the subsequent argument');
-                    console.groupEnd(); //B
-                console.log('default | If no options are given, a single file is expected.');
-                console.groupEnd(); //A
+            displayHelpMenu();
             return -1; // -1 will represent input that will not follow normal execution.
         case('-r'):
         case('-R'):
             // iterate on all files in the directory
             if(await isFile(args[1])) {
-                console.log('A single file was entered, but a directory is expected. Please remove the recursion flag.');
+                console.log('A single file or something that is neither a file nor a directory, but a directory is expected. Please remove the recursion flag.');
                 return -1;
             } else {
                 return args[1];
@@ -47,16 +38,7 @@ async function handleArgs() {
             if(await isFile(args[1])) {
                 return [...args[1]];
             } else {
-                console.log('Usage: node toRomaji [options] <file path>.');
-                console.group(); //A
-                    console.log('OPTIONS');
-                    console.group(); //B
-                        console.log('-h -H | help menu');
-                        console.log('-r -R | recursion, iterate over a directory against multiple files');
-                        console.log('-s -S | single file, rename the single file provided by the subsequent argument');
-                        console.groupEnd(); //B
-                    console.log('default | If no options are given, a single file is expected.');
-                    console.groupEnd(); //A
+                displayHelpMenu();
                 return -1;
             }      
     }
@@ -94,4 +76,17 @@ async function isFile(pathName) {
         return false;
     }
 
+}
+
+function displayHelpMenu() {
+    console.log('Usage: node toRomaji [options] <file path>');
+    console.group(); //A
+        console.log('OPTIONS');
+        console.group(); //B
+            console.log('-h -H | help menu');
+            console.log('-r -R | recursion, iterate over a directory against multiple files');
+            console.log('-s -S | single file, rename the single file provided by the subsequent argument');
+            console.groupEnd(); //B
+        console.log('default | If no options are given, a single file is expected.');
+        console.groupEnd(); //A
 }
